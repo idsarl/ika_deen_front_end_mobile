@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:muslim_guide/views/home/onboarding.dart';
+import 'package:muslim_guide/views/home/splash_sceen.dart';
 import 'views/home_view.dart';
 
 class MyApp extends StatelessWidget {
@@ -13,7 +15,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const HomeView(),
+      home: const SplashScreen(),
       debugShowCheckedModeBanner: false,
     );
   }
