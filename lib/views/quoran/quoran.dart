@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:muslim_guide/core/constants/app_constants.dart';
 
 import '../../widgets/widget_global.dart';
+import 'read_quoran.dart';
 
 class QuoranScreen extends StatefulWidget {
   const QuoranScreen({super.key});
@@ -69,7 +70,8 @@ class _QuoranScreenState extends State<QuoranScreen> {
                       style: TextStyle(
                           color: Colors.grey, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 15),
-                  buildAnimatedItem(child: _buildLastReadCard(), delay: 100),
+                  buildAnimatedItem(
+                      child: _buildLastReadCard(suras[0]), delay: 100),
                   const SizedBox(height: 25),
                   // Liste des Sourates animées une par une
                   ListView.separated(
@@ -139,84 +141,99 @@ class _QuoranScreenState extends State<QuoranScreen> {
   }
 
   // --- Carte "Last Read" (La bannière verte) ---
-  Widget _buildLastReadCard() {
-    return Container(
-      height: 150,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF2D6A4F), Color(0xFF52B788)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Stack(
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.menu_book, color: Colors.white, size: 20),
-                    SizedBox(width: 8),
-                    Text("Continue Reading",
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w500)),
-                  ],
-                ),
-                SizedBox(height: 15),
-                Text("Al-Baqarah",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold)),
-                Text("Verse No: 12", style: TextStyle(color: Colors.white70)),
-              ],
-            ),
+  Widget _buildLastReadCard(Map<String, String> sura) {
+    return InkWell(
+      onTap: () {
+        Get.to(ReadQuoranScreen(
+          suraName: sura['name']!,
+        ));
+      },
+      child: Container(
+        height: 150,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF2D6A4F), Color(0xFF52B788)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          Positioned(
-            right: 0,
-            bottom: 0,
-            child: Image.asset('assets/images/quoran_s_t.png',
-                height: 120), // Utilise ton image de coran
-          )
-        ],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Stack(
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.menu_book, color: Colors.white, size: 20),
+                      SizedBox(width: 8),
+                      Text("Continue Reading",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+                  SizedBox(height: 15),
+                  Text("Al-Baqarah",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold)),
+                  Text("Verse No: 12", style: TextStyle(color: Colors.white70)),
+                ],
+              ),
+            ),
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: Image.asset('assets/images/quoran_s_t.png',
+                  height: 120), // Utilise ton image de coran
+            )
+          ],
+        ),
       ),
     );
   }
 
   // --- Item de la liste des Sourates ---
   Widget _buildSuraItem(Map<String, String> sura) {
-    return ListTile(
-      contentPadding: const EdgeInsets.symmetric(vertical: 8),
-      leading: Stack(
-        alignment: Alignment.center,
-        children: [
-          const Icon(Icons.circle,
-              size: 40,
-              color: AppConstants.primaryColor), // Forme octogonale simulée
-          Text(sura['id']!,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: AppConstants.backgroundColor,
-                  fontSize: 12)),
-        ],
+    return InkWell(
+      onTap: () {
+        Get.to(ReadQuoranScreen(
+          suraName: sura['name']!,
+        ));
+      },
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(vertical: 8),
+        leading: Stack(
+          alignment: Alignment.center,
+          children: [
+            const Icon(Icons.circle,
+                size: 40,
+                color: AppConstants.primaryColor), // Forme octogonale simulée
+            Text(sura['id']!,
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppConstants.backgroundColor,
+                    fontSize: 12)),
+          ],
+        ),
+        title: Text(sura['name']!,
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text("${sura['mean']} • ${sura['verses']}",
+            style: const TextStyle(fontSize: 12, color: Colors.grey)),
+        trailing: Text(sura['arabic']!,
+            style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2D6A4F),
+                fontFamily: 'Amiri' // Si tu as une police arabe
+                )),
       ),
-      title: Text(sura['name']!,
-          style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text("${sura['mean']} • ${sura['verses']}",
-          style: const TextStyle(fontSize: 12, color: Colors.grey)),
-      trailing: Text(sura['arabic']!,
-          style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF2D6A4F),
-              fontFamily: 'Amiri' // Si tu as une police arabe
-              )),
     );
   }
 
