@@ -17,8 +17,9 @@ dependencies:
   intl: ^0.20.2
   flutter_timezone: ^4.1.1
 
-  # getsion secure storage 
+  # gestion local secure storage shared pref
   flutter_secure_storage: ^10.0.0
+  shared_preferences: ^2.5.3
 
   # notification 
   flutter_local_notifications: ^17.0.0 # Vérifie la dernière version

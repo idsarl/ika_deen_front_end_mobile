@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:muslim_guide/core/constants/app_constants.dart';
 import 'package:muslim_guide/views/home/home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../widgets/widget_global.dart';
 
@@ -120,8 +121,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           () {},
                           "Passer",
                           AppConstants.primaryColor,
-                          AppConstants.lightGreen, () {
-                        Get.to(const HomeScreen());
+                          AppConstants.lightGreen, ()async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool("first_time", false);
+  Get.offAll(() => const HomeScreen());
+
                       }),
                       const SizedBox(height: 30),
                     ],

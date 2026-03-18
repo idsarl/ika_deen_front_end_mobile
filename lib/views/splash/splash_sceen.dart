@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:muslim_guide/views/home/home_screen.dart';
 import 'package:muslim_guide/views/onboarding/onboarding.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/app_constants.dart';
 import '../../models/dto/permission_type.dart';
 import '../../services/local_notification/notification_service.dart';
@@ -27,30 +28,25 @@ class _SplashScreenState extends State<SplashScreen>
   
 
   // On crée une instance unique (ou utilise un Singleton si tu préfères)
-final _storage = const FlutterSecureStorage();
+// final _storage = const FlutterSecureStorage();
 
 void _handleInitialNavigation() async {
-  // 1. Lecture sécurisée (renvoie une String ou null)
-  String? alreadyAskedValue = await _storage.read(key: "notif_asked");
-  bool alreadyAsked = alreadyAskedValue == "true";
+  final prefs = await SharedPreferences.getInstance();
 
-  // 2. Vérification du statut système actuel
+  bool alreadyAsked = prefs.getBool("notif_asked") ?? false;
+
   PermissionStatus status = await Permission.notification.status;
 
   if (status.isGranted) {
-    // CAS A : Déjà autorisé, on fonce
     await Future.delayed(const Duration(seconds: 2));
     _navigateToNextScreen();
-  } 
-  else if (!alreadyAsked) {
-    // CAS B : Jamais demandé, on affiche TA page Soft
+  } else if (!alreadyAsked) {
     await Future.delayed(const Duration(seconds: 1));
     if (!mounted) return;
 
     _showNotificationPermission(context);
-  } 
-  else {
-    // CAS C : Déjà demandé une fois mais refusé, on ne harcèle plus l'utilisateur
+  } else {
+    // 🔥 IMPORTANT → ne plus afficher
     await Future.delayed(const Duration(seconds: 1));
     _navigateToNextScreen();
   }
@@ -67,33 +63,46 @@ void _handleInitialNavigation() async {
                 "Autorisez les notifications pour ne manquer aucun moment important du Ramadan.",
             icon: Icons.notifications_active_outlined,
             onGrant: () async {
-              await NotificationService().requestPermissions();
-              _navigateToNextScreen();
-            },
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool("notif_asked", true);
+
+  await NotificationService().requestPermissions();
+  _navigateToNextScreen();
+},
           ),
         ),
       ),
     );
   }
 
-  void _navigateToNextScreen() {
-    if (!mounted) return;
+ void _navigateToNextScreen() async {
+  if (!mounted) return;
 
-    // On choisit la destination (Onboarding ou Home)
-    final bool showOnboarding = Random().nextBool();
-    final Widget nextScreen =
-        showOnboarding ? const OnboardingScreen() : const HomeScreen();
+  final prefs = await SharedPreferences.getInstance();
 
-    Navigator.of(context).pushReplacement(
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => nextScreen,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-        transitionDuration: const Duration(seconds: 1),
-      ),
-    );
+  bool isFirstTime = prefs.getBool("first_time") ?? true;
+
+  Widget nextScreen;
+
+  if (isFirstTime) {
+    // 🔥 IMPORTANT : on met à false DIRECTEMENT
+    await prefs.setBool("first_time", false);
+
+    nextScreen = const OnboardingScreen();
+  } else {
+    nextScreen = const HomeScreen();
   }
+
+  Navigator.of(context).pushReplacement(
+    PageRouteBuilder(
+      pageBuilder: (_, __, ___) => nextScreen,
+      transitionsBuilder: (_, animation, __, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+      transitionDuration: const Duration(seconds: 1),
+    ),
+  );
+}
 
   @override
   void initState() {
