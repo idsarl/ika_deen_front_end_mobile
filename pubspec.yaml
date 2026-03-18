@@ -11,8 +11,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+    # /get x et intel format date 
   get: ^4.6.6
   intl: ^0.20.2
+
+  # notification 
+  flutter_local_notifications: ^17.0.0 # Vérifie la dernière version
+  timezone: ^0.9.2 # Requis pour la planification précise
+
+  # permission 
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:

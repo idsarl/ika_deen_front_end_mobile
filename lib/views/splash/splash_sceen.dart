@@ -4,8 +4,12 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:muslim_guide/views/home/home_screen.dart';
-import 'package:muslim_guide/views/home/onboarding.dart';
+import 'package:muslim_guide/views/onboarding/onboarding.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../core/constants/app_constants.dart';
+import '../../models/dto/permission_type.dart';
+import '../../services/local_notification/notification_service.dart';
+import '../permission_telephone/DynamicPermissionPage.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,33 +22,63 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
- 
- void _navigateToRandomScreen() async{
-  // 1. On attend réellement 3 secondes
-  await Future.delayed(const Duration(seconds: 1));
 
-  // 2. On vérifie si l'écran est toujours affiché pour éviter les erreurs de context
-  if (!mounted) return;
+  void _handleInitialNavigation() async {
+    // 1. On vérifie le statut actuel de la notification
+    PermissionStatus status = await Permission.notification.status;
 
-  // 3. On choisit la destination
-  final bool showOnboarding = Random().nextBool();
-  final Widget nextScreen = showOnboarding ? const OnboardingScreen() : const HomeScreen();
+    if (status.isGranted) {
+      // Cas A : Déjà autorisé -> On attend un peu pour le "feeling" et on navigue
+      await Future.delayed(const Duration(seconds: 2));
+      _navigateToNextScreen();
+    } else {
+      // Cas B : Non autorisé (denied, permanentlyDenied, ou restricted)
+      // On attend un peu et on affiche TA page de permission "soft"
+      await Future.delayed(const Duration(seconds: 1));
+      if (!mounted) return;
 
-  // 4. Navigation Directe (Plus fiable que addPostFrameCallback ici)
-  Navigator.of(context).pushReplacement(
-    PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => nextScreen,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        // Animation de fondu ultra fluide de 1 seconde
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
-      },
-      transitionDuration: const Duration(seconds: 1),
-    ),
-  );
-}
+      _showNotificationPermission(context);
+    }
+  }
+
+  void _showNotificationPermission(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DynamicPermissionPage(
+          permission: PermissionType(
+            title: "Restez connecté spirituellement",
+            description:
+                "Autorisez les notifications pour ne manquer aucun moment important du Ramadan.",
+            icon: Icons.notifications_active_outlined,
+            onGrant: () async {
+              await NotificationService().requestPermissions();
+              _navigateToNextScreen();
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _navigateToNextScreen() {
+    if (!mounted) return;
+
+    // On choisit la destination (Onboarding ou Home)
+    final bool showOnboarding = Random().nextBool();
+    final Widget nextScreen =
+        showOnboarding ? const OnboardingScreen() : const HomeScreen();
+
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => nextScreen,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+        transitionDuration: const Duration(seconds: 1),
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -66,10 +100,7 @@ class _SplashScreenState extends State<SplashScreen>
     //     );
     //   }
     // });
-   // On attend 3 secondes
-  Future.delayed(const Duration(seconds: 2), () {
-    _navigateToRandomScreen();
-  });
+    _handleInitialNavigation();
   }
 
   @override

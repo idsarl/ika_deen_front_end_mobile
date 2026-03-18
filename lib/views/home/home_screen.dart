@@ -9,6 +9,7 @@ import 'package:muslim_guide/views/profile/profil.dart';
 
 import '../../widgets/widget_global.dart';
 import '../quoran/quoran.dart';
+import '../ramadan/routine/ramadan_routine.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -264,29 +265,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // --- 4. Bannière Ramadhan Routine ---
   Widget _buildRamadhanBanner() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.green.withOpacity(0.05), Colors.white],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-        border: Border.all(color: Colors.green.withOpacity(0.1)),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: const Row(
-        children: [
-          Icon(Icons.star, color: Colors.orange, size: 20),
-          SizedBox(width: 10),
-          Text(
-            "Set Ramadhan Routine",
-            style: TextStyle(
-                fontWeight: FontWeight.bold, color: Color(0xFF2D6A4F)),
+    return GestureDetector(
+      onTap: () {
+        Get.to(const RamadhanRoutinePage(), transition: Transition.downToUp);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.green.withOpacity(0.05), Colors.white],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
           ),
-          Spacer(),
-          Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
-        ],
+          border: Border.all(color: Colors.green.withOpacity(0.1)),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: const Row(
+          children: [
+            Icon(Icons.star, color: Colors.orange, size: 20),
+            SizedBox(width: 10),
+            Text(
+              "Set Ramadhan Routine",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: Color(0xFF2D6A4F)),
+            ),
+            Spacer(),
+            Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+          ],
+        ),
       ),
     );
   }

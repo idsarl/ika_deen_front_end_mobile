@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:muslim_guide/views/home/onboarding.dart';
-import 'package:muslim_guide/views/home/splash_sceen.dart';
+import 'package:muslim_guide/views/onboarding/onboarding.dart';
+import 'package:muslim_guide/views/splash/splash_sceen.dart';
 import 'views/home_view.dart';
 
 class MyApp extends StatelessWidget {

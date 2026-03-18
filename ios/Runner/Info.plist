@@ -41,6 +41,27 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
+	 <!-- autorisation -->
+	  <key>UIBackgroundModes</key>
+<array>
+    <string>fetch</string>
+    <string>remote-notification</string>
+</array>
+
+<key>NSUserNotificationUsageDescription</key>
+<string>Nous avons besoin des notifications pour vous rappeler les heures de prière et le Sahoor.</string>
+
+<key>UIBackgroundModes</key>
+<array>
+   <string>audio</string>
+   <string>remote-notification</string>
+</array>
+
+<key>UIViewControllerBasedStatusBarAppearance</key>
+<false/>
+	 <!-- autorisation -->
+
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
