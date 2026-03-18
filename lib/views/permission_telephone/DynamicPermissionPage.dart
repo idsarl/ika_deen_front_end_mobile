@@ -9,6 +9,8 @@ class DynamicPermissionPage extends StatelessWidget {
 
   const DynamicPermissionPage({super.key, required this.permission});
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

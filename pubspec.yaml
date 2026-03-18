@@ -15,6 +15,10 @@ dependencies:
     # /get x et intel format date 
   get: ^4.6.6
   intl: ^0.20.2
+  flutter_timezone: ^4.1.1
+
+  # getsion secure storage 
+  flutter_secure_storage: ^10.0.0
 
   # notification 
   flutter_local_notifications: ^17.0.0 # Vérifie la dernière version

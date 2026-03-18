@@ -10,6 +10,7 @@ import 'package:muslim_guide/views/profile/profil.dart';
 import '../../widgets/widget_global.dart';
 import '../quoran/quoran.dart';
 import '../ramadan/routine/ramadan_routine.dart';
+import '../tashbish/tasbish_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -327,7 +328,10 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             featureIcon(Icons.notifications_none, "Reminder",
                 AppConstants.primaryColor),
-            featureIcon(Icons.reorder, "Tasbih", AppConstants.primaryColor),
+            featureIcon(Icons.reorder, "Tasbih", AppConstants.primaryColor,
+                onTap: () {
+              Get.to(const SoftTasbihPage());
+            }),
             featureIcon(Icons.pan_tool_alt, "Dua", AppConstants.primaryColor),
             featureIcon(Icons.mosque, "Umra", AppConstants.primaryColor),
           ],

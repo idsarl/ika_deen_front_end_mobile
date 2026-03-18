@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:muslim_guide/views/home/home_screen.dart';
 import 'package:muslim_guide/views/onboarding/onboarding.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -23,23 +24,37 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
 
-  void _handleInitialNavigation() async {
-    // 1. On vérifie le statut actuel de la notification
-    PermissionStatus status = await Permission.notification.status;
+  
 
-    if (status.isGranted) {
-      // Cas A : Déjà autorisé -> On attend un peu pour le "feeling" et on navigue
-      await Future.delayed(const Duration(seconds: 2));
-      _navigateToNextScreen();
-    } else {
-      // Cas B : Non autorisé (denied, permanentlyDenied, ou restricted)
-      // On attend un peu et on affiche TA page de permission "soft"
-      await Future.delayed(const Duration(seconds: 1));
-      if (!mounted) return;
+  // On crée une instance unique (ou utilise un Singleton si tu préfères)
+final _storage = const FlutterSecureStorage();
 
-      _showNotificationPermission(context);
-    }
+void _handleInitialNavigation() async {
+  // 1. Lecture sécurisée (renvoie une String ou null)
+  String? alreadyAskedValue = await _storage.read(key: "notif_asked");
+  bool alreadyAsked = alreadyAskedValue == "true";
+
+  // 2. Vérification du statut système actuel
+  PermissionStatus status = await Permission.notification.status;
+
+  if (status.isGranted) {
+    // CAS A : Déjà autorisé, on fonce
+    await Future.delayed(const Duration(seconds: 2));
+    _navigateToNextScreen();
+  } 
+  else if (!alreadyAsked) {
+    // CAS B : Jamais demandé, on affiche TA page Soft
+    await Future.delayed(const Duration(seconds: 1));
+    if (!mounted) return;
+
+    _showNotificationPermission(context);
+  } 
+  else {
+    // CAS C : Déjà demandé une fois mais refusé, on ne harcèle plus l'utilisateur
+    await Future.delayed(const Duration(seconds: 1));
+    _navigateToNextScreen();
   }
+}
 
   void _showNotificationPermission(BuildContext context) {
     Navigator.push(
