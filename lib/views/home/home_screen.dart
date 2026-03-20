@@ -6,9 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:muslim_guide/core/constants/app_constants.dart';
 import 'package:muslim_guide/views/mosque/list_mosque.dart';
 import 'package:muslim_guide/views/profile/profil.dart';
+import 'package:muslim_guide/views/quoran/quoran.dart';
 
 import '../../widgets/widget_global.dart';
-import '../quoran/quoran.dart';
 import '../ramadan/routine/ramadan_routine.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -70,7 +70,9 @@ class _HomeScreenState extends State<HomeScreen> {
     // Initialisation de la liste des pages
     _pages = [
       _buildHomeBody(), // Le contenu de l'accueil
-      const ListMosqueScreen(), // Page Cours (ou Mosquées selon ton test)
+      QuoranScreen(
+        isback: false,
+      ), // Page Cours (ou Mosquées selon ton test)
       const ListMosqueScreen(), // Page Objectifs
       const ProfilScreen(), // Page Profil
     ];
@@ -311,7 +313,10 @@ class _HomeScreenState extends State<HomeScreen> {
               "Quran",
               AppConstants.primaryColor,
               onTap: () {
-                Get.to(const QuoranScreen(),
+                Get.to(
+                    QuoranScreen(
+                      isback: false,
+                    ),
                     transition: Transition.leftToRight);
               },
             ),
@@ -414,11 +419,16 @@ class _HomeScreenState extends State<HomeScreen> {
               activeIcon: Icon(Icons.home_filled),
               label: "Accueil"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.video_library_outlined),
-              activeIcon: Icon(Icons.video_library),
-              label: "Cours"),
+              icon: Icon(Icons.menu_book),
+              activeIcon: Icon(
+                Icons.menu_book,
+              ),
+              label: "Coran"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.track_changes_rounded), label: "Objectifs"),
+              icon: Icon(Icons.home_work_outlined), 
+               activeIcon: Icon(Icons.home_work_rounded), 
+              
+              label: "Mosque"),
           BottomNavigationBarItem(
               icon: Icon(Icons.person_outline_rounded),
               activeIcon: Icon(Icons.person_rounded),
