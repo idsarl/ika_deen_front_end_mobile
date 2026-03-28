@@ -1,89 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:muslim_guide/models/Ayah.dart';
+import 'package:muslim_guide/models/Sura.dart'; // Importez votre modèle
 
 class ReadQuoranScreen extends StatefulWidget {
-  final String suraName;
-  const ReadQuoranScreen({super.key, required this.suraName});
+  final Sura sura; // On passe l'objet Sura entier
+  const ReadQuoranScreen({super.key, required this.sura});
 
   @override
   State<ReadQuoranScreen> createState() => _ReadQuoranScreenState();
 }
 
 class _ReadQuoranScreenState extends State<ReadQuoranScreen> {
-  
-  
-  // Liste fictive d'Ayats pour l'exemple
-  final List<Map<String, String>> ayats = [
-    {
-      "id": "1",
-      "arabic": "اِذَا وَقَعَتِ الْوَاقِعَةُۙ",
-      "latin": "Iżā waqa'atil-wāqi'ah(tu)."
-    },
-    {
-      "id": "2",
-      "arabic": "لَيْسَ لِوَقْعَتِهَا كَاذِبَةٌۘ",
-      "latin": "Laisa liwaq'atihā kāżibah(tun)."
-    },
-    {
-      "id": "3",
-      "arabic": "خَافِضَةٌ رَّافِعَةٌۙ",
-      "latin": "Khāfiḍatur-rāfi'ah(tun)."
-    },
-    {
-      "id": "4",
-      "arabic": "اِذَا رُجَّتِ الْاَرْضُ رَجًّـاۙ",
-      "latin": "Iżā rujjatil-arḍu rajjā(n)."
-    },
-    {
-      "id": "5",
-      "arabic": "وَبُسَّتِ الْجِبَالُ بَسًّـاۙ",
-      "latin": "Wa bussatil-jibālu bassā(n)."
-    },
-    {
-      "id": "6",
-      "arabic": "فَكَانَتْ هَبَاۤءً مُّنْبَثًّـاۙ",
-      "latin": "Fa kānat habā'am mumbaśśā(n)."
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final List<Ayah> ayats = widget.sura.ayahs;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _buildAppBar(),
-      body: SingleChildScrollView(
+      // Utilisation de ListView.builder pour de meilleures performances
+      body: ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-        child: Column(
-          children: [
-            // 1. La Bannière de Titre Vert
-            _buildSuraHeaderCard(),
-            const SizedBox(height: 25),
-            // 2. La Liste des Versets
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: ayats.length,
-              separatorBuilder: (context, index) => const Divider(height: 30),
-              itemBuilder: (context, index) {
-                return _buildAyatItem(ayats[index]);
-              },
-            ),
-          ],
-        ),
+        itemCount: ayats.length + 1, // +1 pour inclure le header
+        itemBuilder: (context, index) {
+          if (index == 0) return _buildSuraHeaderCard();
+          return _buildAyatItem(ayats[index - 1], index);
+        },
       ),
     );
   }
 
-  // --- 1. L'AppBar ---
+  // --- 1. L'AppBar Style Moderne ---
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       backgroundColor: Colors.white,
       elevation: 0,
+      centerTitle: true,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: Colors.grey),
         onPressed: () => Navigator.pop(context),
       ),
       title: Text(
-        widget.suraName,
+        widget.sura.name, // Dynamique
         style: const TextStyle(
           color: Color(0xFF2D6A4F),
           fontWeight: FontWeight.bold,
@@ -93,113 +51,83 @@ class _ReadQuoranScreenState extends State<ReadQuoranScreen> {
       actions: [
         IconButton(
           onPressed: () {},
-          icon: const Icon(Icons.translate, color: Colors.grey, size: 20), // Icône traduction
+          icon: const Icon(Icons.search, color: Colors.grey, size: 22),
         ),
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.bookmark_border_rounded, color: Colors.grey, size: 22),
-        ),
-        const SizedBox(width: 10),
       ],
     );
   }
 
-  // --- 2. La Bannière de Titre (style "Last Read") ---
+  // --- 2. La Bannière (Design "Quranly") ---
   Widget _buildSuraHeaderCard() {
     return Container(
+      margin: const EdgeInsets.only(bottom: 25),
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25),
+        borderRadius: BorderRadius.circular(20),
         gradient: const LinearGradient(
-          colors: [Color(0xFF2D6A4F), Color(0xFF52B788)], // Même dégradé
+          colors: [Color(0xFF52B788), Color(0xFF2D6A4F)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF2D6A4F).withOpacity(0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
-        ],
       ),
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Texte et Infos
+          // Icône décorative en fond (filigrane)
+          Positioned(
+            right: -20,
+            bottom: -20,
+            child: Opacity(
+              opacity: 0.1,
+              child: Icon(Icons.menu_book, size: 180, color: Colors.white),
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.all(25.0),
+            padding: const EdgeInsets.symmetric(vertical: 25.0, horizontal: 20),
             child: Column(
               children: [
                 Text(
-                  widget.suraName,
+                  widget.sura.name,
                   style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                  ),
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 Text(
-                  "The Event That Will Happen", // Signification (statique ici)
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.9),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                  ),
+                  widget.sura.translation,
+                  style: const TextStyle(color: Colors.white70, fontSize: 15),
                 ),
-                const SizedBox(height: 15),
-                Container(
-                  height: 1.5,
-                  width: double.infinity,
-                  color: Colors.white.withOpacity(0.4),
-                ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 12),
+                const Divider(color: Colors.white30, indent: 50, endIndent: 50),
+                const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "MECCAN", // Type
-                      style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 13),
+                    Text(widget.sura.revelationType.toUpperCase(),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500)),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Icon(Icons.circle, size: 4, color: Colors.white),
                     ),
-                    const SizedBox(width: 8),
-                    Container(width: 4, height: 4, decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle)),
-                    const SizedBox(width: 8),
-                    Text(
-                      "96 VERSES", // Nombre versets
-                      style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 13),
-                    ),
+                    Text("${widget.sura.totalVerses} VERSES",
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500)),
                   ],
                 ),
-                const SizedBox(height: 20),
-                // Bismillah stylisé
-                const Opacity(
-                  opacity: 0.9,
-                  child: Text(
-                    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
-                    textAlign: TextAlign.center,
+                const SizedBox(height: 25),
+                if (widget.sura.id != 9)
+                  const Text(
+                    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
                     style: TextStyle(
-                      fontFamily: 'Amiri', // Police Arabe requise
-                      fontSize: 26,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        fontFamily: 'Amiri', fontSize: 28, color: Colors.white),
                   ),
-                ),
               ],
-            ),
-          ),
-          // Motif de fond (discret)
-          Positioned(
-            left: -30,
-            bottom: -30,
-            child: Opacity(
-              opacity: 0.08,
-              child: Image.asset(
-                'assets/images/quoran_s_t.png', // Image de motif à ajouter
-                height: 180,
-                color: Colors.white,
-              ),
             ),
           ),
         ],
@@ -207,102 +135,149 @@ class _ReadQuoranScreenState extends State<ReadQuoranScreen> {
     );
   }
 
-  // --- 3. Item du Verset (Numéro, Arabe, Latin) ---
-  Widget _buildAyatItem(Map<String, String> ayat) {
-    return Column(
-      children: [
-        // La Barre d'outils du verset (Numéro, Actions)
-        Row(
-          children: [
-            // Numéro du verset
-            _buildAyatNumberIcon(ayat['id']!),
-            const Spacer(),
-            // Actions (Jouer, Favori)
-            Row(
+  Widget _buildAyatItem(Ayah ayat, int index) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 25.0),
+      child: Column(
+        crossAxisAlignment:
+            CrossAxisAlignment.start, // Aligne la traduction à gauche
+        children: [
+          // --- Barre d'outils (Numéro + Actions) ---
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color:
+                  const Color(0xFFF9F9F9), // Gris très clair comme sur l'image
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
               children: [
-                IconButton(
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () {},
-                  icon: const Icon(Icons.share_outlined, color: Color(0xFF2D6A4F), size: 18),
+                // Numéro stylisé (juste le texte en vert)
+                Text(
+                  "$index.",
+                  style: const TextStyle(
+                    color: Color(0xFF2D6A4F),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
-                IconButton(
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () {},
-                  icon: const Icon(Icons.play_arrow_outlined, color: Color(0xFF2D6A4F), size: 18),
-                ),
-                IconButton(
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () {},
-                  icon: const Icon(Icons.bookmark_border_rounded, color: Color(0xFF2D6A4F), size: 18),
-                ),
+                const Spacer(),
+                // Icônes d'actions discrètes
+                const Icon(Icons.share_outlined,
+                    color: Color(0xFF2D6A4F), size: 20),
+                const SizedBox(width: 18),
+                const Icon(Icons.play_circle_outline,
+                    color: Color(0xFF2D6A4F), size: 22),
+                const SizedBox(width: 18),
+                const Icon(Icons.bookmark_border,
+                    color: Color(0xFF2D6A4F), size: 20),
               ],
             ),
-          ],
-        ),
-        const SizedBox(height: 15),
-        // Texte Arabe
-        Align(
-          alignment: Alignment.centerRight,
-          child: Text(
-            ayat['arabic']!,
-            textAlign: TextAlign.right,
+          ),
+          const SizedBox(height: 20),
+
+          // --- TEXTE ARABE (Aligné à droite) ---
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              ayat.text,
+              textAlign: TextAlign.right,
+              style: const TextStyle(
+                fontFamily: 'Amiri', // Assure-toi d'avoir importé cette police
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1B4332),
+                height: 2.2, // Important pour l'espacement des voyelles
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // --- TRANSCRIPTION (Phonétique en vert) ---
+          Text(
+            ayat.transliteration ?? "Transcription indisponible",
             style: const TextStyle(
-              fontFamily: 'Amiri', // Police Arabe requise
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1B4332), // Vert très sombre
-              height: 1.6, // Espacement de ligne soft
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        // Texte Latin / Traduction
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            ayat['latin']!,
-            style: TextStyle(
+              color: Color(0xFF52B788),
               fontSize: 14,
-              color: Colors.black.withOpacity(0.8),
-              height: 1.4,
+              fontWeight: FontWeight.w600,
+              fontStyle: FontStyle.italic,
             ),
           ),
-        ),
-      ],
+          const SizedBox(height: 6),
+
+          // --- TRADUCTION (Gris foncé) ---
+          Text(
+            ayat.translation ?? "Traduction indisponible",
+            style: TextStyle(
+              color: Colors.grey[700],
+              fontSize: 14,
+              height: 1.5,
+            ),
+          ),
+        ],
+      ),
     );
   }
+  // --- 3. Item du Verset (Structure de l'image) ---
+  // Widget _buildAyatItem(Ayah ayat, int index) {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       // Barre d'actions discrète
+  //       Row(
+  //         children: [
+  //           Text("$index.", style: const TextStyle(color: Color(0xFF2D6A4F), fontWeight: FontWeight.bold, fontSize: 15)),
+  //           const Spacer(),
+  //           const Icon(Icons.share_outlined, color: Colors.grey, size: 18),
+  //           const SizedBox(width: 15),
+  //           const Icon(Icons.play_arrow_outlined, color: Color(0xFF2D6A4F), size: 22),
+  //           const SizedBox(width: 15),
+  //           const Icon(Icons.bookmark_border, color: Colors.grey, size: 18),
+  //         ],
+  //       ),
+  //       const SizedBox(height: 15),
 
-  // --- Icône Numéro de Verset stylisée (Hexagone/Etoile) ---
-  Widget _buildAyatNumberIcon(String id) {
-  return SizedBox(
-    width: 35,
-    height: 35,
-    child: Stack(
-      alignment: Alignment.center,
-      children: [
-        // Premier carré
-        Transform.rotate(
-          angle: 0,
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFC5A358), width: 1.5),
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-        ),
-        // Deuxième carré incliné (crée l'étoile)
-        Transform.rotate(
-          angle: 45 * (3.14159 / 180), // 45 degrés
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFC5A358), width: 1.5),
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-        ),
-        Text(id, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-      ],
-    ),
-  );
-}
+  //       // Texte Arabe (Aligné à droite)
+  //       Align(
+  //         alignment: Alignment.centerRight,
+  //         child: Text(
+  //           ayat.text,
+  //           textAlign: TextAlign.right,
+  //           style: const TextStyle(
+  //             fontFamily: 'Amiri',
+  //             fontSize: 22,
+  //             fontWeight: FontWeight.bold,
+  //             color: Color(0xFF1B4332),
+  //             height: 2.2,
+  //           ),
+  //         ),
+  //       ),
+  //       const SizedBox(height: 12),
+
+  //       // Phonétique / Transcription (Couleur verte comme l'image)
+  //       Text(
+  //         ayat.transliteration ?? "Laisa liwaq'atiha kadzibah", // Exemple dynamique
+  //         style: const TextStyle(
+  //           color: Color(0xFF52B788),
+  //           fontSize: 14,
+  //           fontWeight: FontWeight.w500,
+  //           fontStyle: FontStyle.italic,
+  //         ),
+  //       ),
+  //       const SizedBox(height: 6),
+
+  //       // Traduction (Gris pour la lisibilité)
+  //       Text(
+  //         ayat. ?? "Then no one can deny it has come.", // Exemple dynamique
+  //         style: TextStyle(
+  //           color: Colors.grey[600],
+  //           fontSize: 14,
+  //           height: 1.4,
+  //         ),
+  //       ),
+  //       const SizedBox(height: 10),
+  //       const Divider(height: 40, thickness: 0.5, color: Color(0xFFEEEEEE)),
+  //     ],
+  //   );
+  // }
 }

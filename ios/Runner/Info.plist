@@ -60,6 +60,9 @@
 
 <key>UIViewControllerBasedStatusBarAppearance</key>
 <false/>
+
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>L'application a besoin de votre position pour calculer la direction de la Qibla.</string>
 	 <!-- autorisation -->
 
 	<key>CADisableMinimumFrameDurationOnPhone</key>
