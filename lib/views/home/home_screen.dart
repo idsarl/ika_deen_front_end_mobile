@@ -9,9 +9,14 @@ import 'package:muslim_guide/views/profile/profil.dart';
 import 'package:muslim_guide/views/quoran/quoran.dart';
 
 import '../../widgets/widget_global.dart';
+import '../doua/dua_home_screen.dart';
+import '../nom_dAllah/asma_al_husna_screen.dart';
 import '../qibla/qibla_page.dart';
+import '../radio_tv/radio_tv_screen.dart';
 import '../ramadan/routine/ramadan_routine.dart';
 import '../tashbish/tasbish_screen.dart';
+import '../umra/umra_guide_screen.dart';
+import '../zakat/zakat_calculator_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -308,8 +313,17 @@ class _HomeScreenState extends State<HomeScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            featureIcon(Icons.history, "Last Read", AppConstants.primaryColor,
-                onTap: () {}),
+            featureIcon(
+              Icons.live_tv_rounded, // Icône TV moderne
+              "Radio/TV",
+              AppConstants.primaryColor,
+              onTap: () {
+                // Naviguer vers ta page de streaming ou liste de chaînes
+                Get.to(RadioTvScreen(), transition: Transition.leftToRight);
+
+                // Navigator.push(context, MaterialPageRoute(builder: (context) => RadioTvScreen()));
+              },
+            ),
             featureIcon(
               Icons.menu_book,
               "Quran",
@@ -331,21 +345,49 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             featureIcon(
-                Icons.volunteer_activism, "Zakat", AppConstants.primaryColor),
+              Icons.volunteer_activism,
+              "Zakat",
+              AppConstants.primaryColor,
+              onTap: () {
+                Get.to(const ZakatCalculatorScreen(),
+                    transition: Transition.leftToRight);
+              },
+            ),
           ],
         ),
         const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            featureIcon(Icons.notifications_none, "Reminder",
-                AppConstants.primaryColor),
+            featureIcon(
+              Icons.menu_book_rounded,
+              "99 Noms d'Allah",
+              AppConstants.primaryColor,
+              onTap: () {
+                Get.to(AsmaAlHusnaScreen(), transition: Transition.leftToRight);
+              },
+            ),
             featureIcon(Icons.reorder, "Tasbih", AppConstants.primaryColor,
                 onTap: () {
-              Get.to(const SoftTasbihPage());
+              Get.to(const SoftTasbihPage(),transition: Transition.leftToRight);
             }),
-            featureIcon(Icons.pan_tool_alt, "Dua", AppConstants.primaryColor),
-            featureIcon(Icons.mosque, "Umra", AppConstants.primaryColor),
+            featureIcon(
+              Icons.pan_tool_alt,
+              "Dua",
+              AppConstants.primaryColor,
+              onTap: () {
+                Get.to(const DuaHomeScreen(),
+                    transition: Transition.leftToRight);
+              },
+            ),
+            featureIcon(
+              Icons.mosque,
+              "Umra",
+              AppConstants.primaryColor,
+              onTap: () {
+                Get.to(UmraGuideScreen(), transition: Transition.leftToRight);
+              },
+            ),
           ],
         ),
         const SizedBox(height: 10),

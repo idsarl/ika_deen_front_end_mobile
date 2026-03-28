@@ -11,6 +11,5 @@ void main() async {
   await notificationService.init();
   await notificationService.scheduleRamadanSequence();
   
-  
   runApp(const MyApp());
 }
