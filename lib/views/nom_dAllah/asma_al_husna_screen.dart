@@ -105,7 +105,7 @@ class AsmaAlHusnaScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              name.transliteration,
+                              name.transliteration!,
                               style: const TextStyle(
                                 color: Color(
                                     0xFF2ECC71), // Couleur verte de l'image
@@ -115,7 +115,7 @@ class AsmaAlHusnaScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              name.meaning,
+                              name.meaning!,
                               style: const TextStyle(
                                 color: Colors.black87,
                                 fontSize: 14,
@@ -127,7 +127,7 @@ class AsmaAlHusnaScreen extends StatelessWidget {
                       ),
                       // Calligraphie Arabe
                       Text(
-                        name.arabic,
+                        name.arabic!,
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,

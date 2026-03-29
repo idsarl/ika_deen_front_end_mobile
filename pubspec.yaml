@@ -19,8 +19,8 @@ dependencies:
 
   # gestion local secure storage shared pref
   flutter_secure_storage: ^10.0.0
-
   shared_preferences: ^2.2.2
+
   # notification 
   flutter_local_notifications: ^17.0.0 # Vérifie la dernière version
   timezone: ^0.9.2 # Requis pour la planification précise

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:muslim_guide/core/constants/app_constants.dart';
+import 'package:muslim_guide/views/dua/dua.dart';
+import 'package:muslim_guide/views/dua/nom.dart';
 import 'package:muslim_guide/views/mosque/list_mosque.dart';
 import 'package:muslim_guide/views/profile/profil.dart';
 import 'package:muslim_guide/views/quoran/quoran.dart';
@@ -294,7 +296,8 @@ class _HomeScreenState extends State<HomeScreen> {
             Icon(Icons.star, color: AppConstants.orange, size: 20),
             SizedBox(width: 10),
             Text(
-              "Ramadhan Routine",
+
+              "Ma routine du  Ramadan",
               style: TextStyle(
                   fontWeight: FontWeight.bold, color: Color(0xFF2D6A4F)),
             ),
@@ -423,6 +426,7 @@ class _HomeScreenState extends State<HomeScreen> {
   );
 }
 
+
   // --- 6. Section Daily Dua ---
   Widget _buildDailyDuaSection() {
     return Column(
@@ -435,13 +439,17 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Icon(Icons.menu_book_rounded, color: Colors.green),
                 SizedBox(width: 8),
-                Text("Dua quotidien",
+
+                Text("Dua du jour",
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ],
             ),
             TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (_) => Dua()));
+                },
                 child:
                     const Text("Tous >", style: TextStyle(color: Colors.grey))),
           ],

@@ -181,6 +181,7 @@ Widget featureIcon(IconData icon, String label, Color color,
           ),
         ],
       ),
+
     ),
   );
 }
