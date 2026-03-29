@@ -10,11 +10,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'muslim_guide',
+      title: 'IKA_DEEN',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
+      // CONFIGURATION PAR DÉFAUT ICI :
+      defaultTransition: Transition.leftToRight,
+      transitionDuration: const Duration(
+          milliseconds: 400), // Optionnel: pour régler la vitesse
       home: const SplashScreen(),
       debugShowCheckedModeBanner: false,
     );

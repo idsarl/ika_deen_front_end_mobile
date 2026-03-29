@@ -121,28 +121,66 @@ Widget buildAppBarAction(
 }
 
 //icon et texte en bas
+//  Widget featureIcon(IconData icon, String label, Color color,
+//     {VoidCallback? onTap}) {
+//   return InkWell(
+//     // Utilisation de InkWell pour l'effet de pression visuel
+//     onTap: onTap,
+//     child: Column(
+//       children: [
+//         Container(
+//           padding: const EdgeInsets.all(12),
+//           decoration: BoxDecoration(
+//             color: color.withOpacity(0.1), // Fond coloré très léger
+//             borderRadius: BorderRadius.circular(18),
+//           ),
+//           child: Icon(icon, size: 26, color: color), // Icône assortie
+//         ),
+//         const SizedBox(height: 8),
+//         Text(
+//           label,
+//           maxLines: 1,
+//           overflow: TextOverflow.ellipsis,
+//           style: const TextStyle(
+//               fontSize: 12, color: Colors.black87, fontWeight: FontWeight.w500),
+//         ),
+//       ],
+//     ),
+//   );
+// }
 Widget featureIcon(IconData icon, String label, Color color,
     {VoidCallback? onTap}) {
   return InkWell(
-    // Utilisation de InkWell pour l'effet de pression visuel
     onTap: onTap,
-    child: Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1), // Fond coloré très léger
-            borderRadius: BorderRadius.circular(18),
+    borderRadius:
+        BorderRadius.circular(18), // Pour que l'effet ripple soit propre
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min, // Important pour l'alignement vertical
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Icon(icon, size: 26, color: color),
           ),
-          child: Icon(icon, size: 26, color: color), // Icône assortie
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(
-              fontSize: 12, color: Colors.black87, fontWeight: FontWeight.w500),
-        ),
-      ],
+          const SizedBox(height: 8),
+          Text(
+            label,
+            maxLines: 1, // Garde le texte sur une ligne
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis, // Coupe avec "..." si trop long
+            style: const TextStyle(
+              fontSize: 11, // Un poil plus petit pour laisser de la place
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -162,5 +200,64 @@ Widget buildAnimatedItem({required Widget child, required int delay}) {
       );
     },
     child: child,
+  );
+}
+
+//param liste widget
+Widget buildSettingsGroup(List<Widget> tiles) {
+  return Container(
+    decoration: softCardDecoration(Colors.white),
+    child: Column(children: tiles),
+  );
+}
+
+// Widget buildSettingsTile(IconData icon, String title, {VoidCallback? onTap}) {
+//   return ListTile(
+//     leading: Icon(icon, color: Colors.black87),
+//     title: Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+//     trailing: const Icon(Icons.chevron_right, size: 20),
+//     onTap: onTap,
+//   );
+// }
+
+Widget buildSettingsTile(IconData icon, String title,
+    {VoidCallback? onTap, String? subtitle, Color? color}) {
+  return ListTile(
+    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 1),
+    leading: Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: (color ?? Colors.black87).withOpacity(0.08),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Icon(icon, color: color ?? Colors.black87, size: 22),
+    ),
+    title: Text(
+      title,
+      style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: color ?? Colors.black),
+    ),
+    subtitle: subtitle != null
+        ? Text(subtitle,
+            style: const TextStyle(fontSize: 12, color: Colors.black54))
+        : null,
+    trailing: const Icon(Icons.chevron_right, color: Colors.black26, size: 20),
+    onTap: onTap,
+  );
+}
+
+BoxDecoration softCardDecoration(Color color) {
+  return BoxDecoration(
+    color: color,
+    borderRadius: BorderRadius.circular(25),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.03),
+        blurRadius: 15,
+        offset: const Offset(0, 8),
+      ),
+    ],
   );
 }

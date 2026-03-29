@@ -25,6 +25,10 @@ class AppConstants {
   /// Main background color
   static const Color backgroundColor = Color(0xFFFFFFFF);
 
+  static const Color blanc = Color(0xFFFFFFFF);
+
+  static const Color orange = Colors.orange;
+
   /// Primary text color
   static const Color textPrimary = Color(0xFF1C1C1C);
 

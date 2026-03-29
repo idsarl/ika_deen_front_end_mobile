@@ -291,10 +291,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: const Row(
           children: [
-            Icon(Icons.star, color: Colors.orange, size: 20),
+            Icon(Icons.star, color: AppConstants.orange, size: 20),
             SizedBox(width: 10),
             Text(
-              "Set Ramadhan Routine",
+              "Ramadhan Routine",
               style: TextStyle(
                   fontWeight: FontWeight.bold, color: Color(0xFF2D6A4F)),
             ),
@@ -307,94 +307,121 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // --- 5. Grille des fonctionnalités ---
-  Widget _buildFeatureGrid() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            featureIcon(
-              Icons.live_tv_rounded, // Icône TV moderne
-              "Radio/TV",
-              AppConstants.primaryColor,
-              onTap: () {
-                // Naviguer vers ta page de streaming ou liste de chaînes
-                Get.to(RadioTvScreen(), transition: Transition.leftToRight);
+  // Widget _buildFeatureGrid() {
+  //   return Column(
+  //     children: [
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //         children: [
+  //           featureIcon(
+  //             Icons.live_tv_rounded, // Icône TV moderne
+  //             "Radio/TV",
+  //             AppConstants.primaryColor,
+  //             onTap: () {
+  //               // Naviguer vers ta page de streaming ou liste de chaînes
+  //               Get.to(RadioTvScreen(), transition: Transition.leftToRight);
 
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => RadioTvScreen()));
-              },
-            ),
-            featureIcon(
-              Icons.menu_book,
-              "Quran",
-              AppConstants.primaryColor,
-              onTap: () {
-                Get.to(
-                    QuoranScreen(
-                      isback: false,
-                    ),
-                    transition: Transition.leftToRight);
-              },
-            ),
-            featureIcon(
-              Icons.explore_outlined,
-              "Qibla",
-              AppConstants.primaryColor,
-              onTap: () {
-                Get.to(const QiblaPage(), transition: Transition.leftToRight);
-              },
-            ),
-            featureIcon(
-              Icons.volunteer_activism,
-              "Zakat",
-              AppConstants.primaryColor,
-              onTap: () {
-                Get.to(const ZakatCalculatorScreen(),
-                    transition: Transition.leftToRight);
-              },
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            featureIcon(
-              Icons.menu_book_rounded,
-              "99 Noms d'Allah",
-              AppConstants.primaryColor,
-              onTap: () {
-                Get.to(AsmaAlHusnaScreen(), transition: Transition.leftToRight);
-              },
-            ),
-            featureIcon(Icons.reorder, "Tasbih", AppConstants.primaryColor,
-                onTap: () {
-              Get.to(const SoftTasbihPage(),transition: Transition.leftToRight);
-            }),
-            featureIcon(
-              Icons.pan_tool_alt,
-              "Dua",
-              AppConstants.primaryColor,
-              onTap: () {
-                Get.to(const DuaHomeScreen(),
-                    transition: Transition.leftToRight);
-              },
-            ),
-            featureIcon(
-              Icons.mosque,
-              "Umra",
-              AppConstants.primaryColor,
-              onTap: () {
-                Get.to(UmraGuideScreen(), transition: Transition.leftToRight);
-              },
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        const Divider(),
-      ],
-    );
-  }
+  //               // Navigator.push(context, MaterialPageRoute(builder: (context) => RadioTvScreen()));
+  //             },
+  //           ),
+  //           featureIcon(
+  //             Icons.menu_book,
+  //             "Quran",
+  //             AppConstants.primaryColor,
+  //             onTap: () {
+  //               Get.to(
+  //                   QuoranScreen(
+  //                     isback: false,
+  //                   ),
+  //                   transition: Transition.leftToRight);
+  //             },
+  //           ),
+  //           featureIcon(
+  //             Icons.explore_outlined,
+  //             "Qibla",
+  //             AppConstants.primaryColor,
+  //             onTap: () {
+  //               Get.to(const QiblaPage(), transition: Transition.leftToRight);
+  //             },
+  //           ),
+  //           featureIcon(
+  //             Icons.volunteer_activism,
+  //             "Zakat",
+  //             AppConstants.primaryColor,
+  //             onTap: () {
+  //               Get.to(const ZakatCalculatorScreen(),
+  //                   transition: Transition.leftToRight);
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //       const SizedBox(height: 20),
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //         children: [
+  //           featureIcon(
+  //             Icons.menu_book_rounded,
+  //             "99 Noms d'Allah",
+  //             AppConstants.primaryColor,
+  //             onTap: () {
+  //               Get.to(AsmaAlHusnaScreen(), transition: Transition.leftToRight);
+  //             },
+  //           ),
+  //           featureIcon(Icons.reorder, "Tasbih", AppConstants.primaryColor,
+  //               onTap: () {
+  //             Get.to(const SoftTasbihPage(),
+  //                 transition: Transition.leftToRight);
+  //           }),
+  //           featureIcon(
+  //             Icons.pan_tool_alt,
+  //             "Dua",
+  //             AppConstants.primaryColor,
+  //             onTap: () {
+  //               Get.to(const DuaHomeScreen(),
+  //                   transition: Transition.leftToRight);
+  //             },
+  //           ),
+  //           featureIcon(
+  //             Icons.mosque,
+  //             "Umra",
+  //             AppConstants.primaryColor,
+  //             onTap: () {
+  //               Get.to(const UmraGuideScreen(),
+  //                   transition: Transition.leftToRight);
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //       const SizedBox(height: 10),
+  //       const Divider(),
+  //     ],
+  //   );
+  // }
+  Widget _buildFeatureGrid() {
+  return Column(
+    children: [
+      Row(
+        children: [
+          Expanded(child: featureIcon(Icons.live_tv_rounded, "Radio/TV", AppConstants.primaryColor, onTap: () => Get.to(RadioTvScreen()))),
+          Expanded(child: featureIcon(Icons.menu_book, "Quran", AppConstants.primaryColor, onTap: () => Get.to(QuoranScreen(isback: false)))),
+          Expanded(child: featureIcon(Icons.explore_outlined, "Qibla", AppConstants.primaryColor, onTap: () => Get.to(const QiblaPage()))),
+          Expanded(child: featureIcon(Icons.volunteer_activism, "Zakat", AppConstants.primaryColor, onTap: () => Get.to(const ZakatCalculatorScreen()))),
+        ],
+      ),
+      const SizedBox(height: 15),
+      Row(
+        children: [
+          Expanded(child: featureIcon(Icons.menu_book_rounded, "99 Noms d'Allah", AppConstants.primaryColor, onTap: () => Get.to(AsmaAlHusnaScreen()))),
+          Expanded(child: featureIcon(Icons.reorder, "Tasbih", AppConstants.primaryColor, onTap: () => Get.to(const SoftTasbihPage()))),
+          Expanded(child: featureIcon(Icons.pan_tool_alt, "Dua", AppConstants.primaryColor, onTap: () => Get.to(const DuaHomeScreen()))),
+          Expanded(child: featureIcon(Icons.mosque, "Umra", AppConstants.primaryColor, onTap: () => Get.to(const UmraGuideScreen()))),
+        ],
+      ),
+      const SizedBox(height: 10),
+      const Divider(),
+    ],
+  );
+}
 
   // --- 6. Section Daily Dua ---
   Widget _buildDailyDuaSection() {
@@ -408,7 +435,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Icon(Icons.menu_book_rounded, color: Colors.green),
                 SizedBox(width: 8),
-                Text("Daily Dua",
+                Text("Dua quotidien",
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ],
@@ -419,7 +446,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Text("Tous >", style: TextStyle(color: Colors.grey))),
           ],
         ),
-        const Text("1. Morning Prayer",
+        const Text("1. Prière du matin",
             style: TextStyle(fontWeight: FontWeight.w600)),
         const SizedBox(height: 10),
         Container(

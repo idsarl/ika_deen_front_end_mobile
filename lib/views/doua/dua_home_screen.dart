@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:ui'; // Pour l'effet de flou
+import 'dart:ui';
+
+import 'package:muslim_guide/core/constants/app_constants.dart'; // Pour l'effet de flou
 
 class DuaHomeScreen extends StatefulWidget {
   const DuaHomeScreen({super.key});
@@ -52,7 +54,7 @@ class _DuaHomeScreenState extends State<DuaHomeScreen>
                     _buildDuaCategoryCard(
                         "En cas de Difficulté",
                         Icons.shield_moon_outlined,
-                        "Patience et soulagement"), // Icône exemple
+                        "Patience et soulagement"),
                   ],
                 ),
               ),
@@ -71,14 +73,15 @@ class _DuaHomeScreenState extends State<DuaHomeScreen>
       backgroundColor: Colors.teal, // Ou AppConstants.primaryColor
       flexibleSpace: FlexibleSpaceBar(
         title: const Text("Mes Invocations (Dua)",
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: AppConstants.blanc)),
         background: Stack(
           fit: StackFit.expand,
           children: [
             // Image de fond (ex: mains levées, mosquée douce)
-            Image.asset(
-                'assets/images/h_doua_a.jpg',
-                fit: BoxFit.cover),
+            Image.asset('assets/images/h_doua_a.jpg', fit: BoxFit.cover),
             // Dégradé sombre pour le texte
             DecoratedBox(
               decoration: BoxDecoration(
