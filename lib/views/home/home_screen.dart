@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:muslim_guide/core/constants/app_constants.dart';
+import 'package:muslim_guide/views/dua/dua.dart';
+import 'package:muslim_guide/views/dua/nom.dart';
 import 'package:muslim_guide/views/mosque/list_mosque.dart';
 import 'package:muslim_guide/views/profile/profil.dart';
 import 'package:muslim_guide/views/quoran/quoran.dart';
 
 import '../../widgets/widget_global.dart';
 import '../ramadan/routine/ramadan_routine.dart';
+import '../tashbish/tasbish_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -287,7 +290,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Icon(Icons.star, color: Colors.orange, size: 20),
             SizedBox(width: 10),
             Text(
-              "Set Ramadhan Routine",
+              "Ma routine du  Ramadan",
               style: TextStyle(
                   fontWeight: FontWeight.bold, color: Color(0xFF2D6A4F)),
             ),
@@ -306,11 +309,12 @@ class _HomeScreenState extends State<HomeScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            featureIcon(Icons.history, "Last Read", AppConstants.primaryColor,
+            featureIcon(Icons.radio_outlined, "Radio islamique",
+                AppConstants.primaryColor,
                 onTap: () {}),
             featureIcon(
               Icons.menu_book,
-              "Quran",
+              "Coran",
               AppConstants.primaryColor,
               onTap: () {
                 Get.to(
@@ -330,10 +334,19 @@ class _HomeScreenState extends State<HomeScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            featureIcon(Icons.notifications_none, "Reminder",
+            featureIcon(Icons.notifications_none, "Les 99 noms D'Allah", onTap: () => Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => NomAllahScreen())),
                 AppConstants.primaryColor),
-            featureIcon(Icons.reorder, "Tasbih", AppConstants.primaryColor),
-            featureIcon(Icons.pan_tool_alt, "Dua", AppConstants.primaryColor),
+            featureIcon(Icons.reorder, "Tasbih", AppConstants.primaryColor,
+                onTap: () {
+              Get.to(const SoftTasbihPage());
+            }),
+            featureIcon(
+                Icons.pan_tool_alt,
+                "Duas",
+                onTap: () => Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => Dua())),
+                AppConstants.primaryColor),
             featureIcon(Icons.mosque, "Umra", AppConstants.primaryColor),
           ],
         ),
@@ -355,13 +368,16 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Icon(Icons.menu_book_rounded, color: Colors.green),
                 SizedBox(width: 8),
-                Text("Daily Dua",
+                Text("Dua du jour",
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               ],
             ),
             TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (_) => Dua()));
+                },
                 child:
                     const Text("Tous >", style: TextStyle(color: Colors.grey))),
           ],
@@ -425,9 +441,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               label: "Coran"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.home_work_outlined), 
-               activeIcon: Icon(Icons.home_work_rounded), 
-              
+              icon: Icon(Icons.home_work_outlined),
+              activeIcon: Icon(Icons.home_work_rounded),
               label: "Mosque"),
           BottomNavigationBarItem(
               icon: Icon(Icons.person_outline_rounded),

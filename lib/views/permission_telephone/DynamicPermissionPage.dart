@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:muslim_guide/views/home/home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/dto/permission_type.dart';
 
@@ -69,7 +70,6 @@ class DynamicPermissionPage extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   permission.onGrant();
-                  Navigator.pop(context); // Retour après action
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1E5631),
@@ -88,12 +88,17 @@ class DynamicPermissionPage extends StatelessWidget {
 
               // Bouton Refuser (Discret)
               TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Future.delayed(const Duration(milliseconds: 300), () {
-                    Get.to(const HomeScreen(),
-                        transition: Transition.leftToRight);
-                  });
+                onPressed: 
+                  () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setBool("notif_asked", true);
+
+                    Navigator.pop(context);
+
+                    Future.delayed(const Duration(milliseconds: 300), () {
+                      Get.to(const HomeScreen());
+                    });
+                  
                 },
                 child: Text(
                   "Plus tard",

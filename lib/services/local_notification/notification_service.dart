@@ -4,6 +4,10 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
 
+import 'package:flutter_timezone/flutter_timezone.dart'; // Ajoute ce package
+
+
+
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
   factory NotificationService() => _instance;
@@ -32,30 +36,49 @@ class NotificationService {
   }
 
   Future<void> init() async {
-    // Initialisation des fuseaux horaires
-    tz.initializeTimeZones();
+  tz.initializeTimeZones();
 
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+  // Récupérer le nom du fuseau horaire local (ex: "Africa/Bamako")
+  final String timeZoneName = await FlutterTimezone.getLocalTimezone();
+  
+  // Configurer la localisation locale pour que tz.local fonctionne
+  tz.setLocalLocation(tz.getLocation(timeZoneName));
 
-    const DarwinInitializationSettings initializationSettingsIOS =
-        DarwinInitializationSettings();
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-    );
+  const DarwinInitializationSettings initializationSettingsIOS =
+      DarwinInitializationSettings();
 
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  }
+  const InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+  // --- AJOUT CRUCIAL ICI ---
+  // On crée le canal de force pour Android
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'default_channel', // L'ID que tu utilises dans _scheduleNotification
+    'Rappels de Prière', 
+    description: 'Notifications pour le Ramadan',
+    importance: Importance.max, // Indispensable pour que ça "pop" à l'écran
+    // playSound: true,
+  );
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+}
+
 
   // Fonction pour envoyer une notification immédiate (Test)
   Future<void> showInstantNotification(String title, String body) async {
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
-      'ramadhan_channel',
-      'Ramadhan Routine',
+      'ikadeen_channel',
+      'IKADEEN Routine',
       importance: Importance.max,
       priority: Priority.high,
       // Design soft : on peut ajouter un son personnalisé ici
@@ -71,20 +94,20 @@ class NotificationService {
     // 1. Définition du son pour Android (sans l'extension)
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
-      'ramadhan_prayer_channel', // ID unique pour ce type de son
-      'Ramadhan Prayers',
+      'ikandeen_prayer_channel', // ID unique pour ce type de son
+      'IKADEEN Prayers',
       importance: Importance.max,
       priority: Priority.high,
-      sound: RawResourceAndroidNotificationSound(
-          'islamic_tone'), // Nom du fichier dans /raw
-      playSound: true,
+      // sound: RawResourceAndroidNotificationSound(
+      //     'islamic_tone'), // Nom du fichier dans /raw
+      // playSound: true,
     );
 
     // 2. Définition du son pour iOS (avec l'extension)
     const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
       presentSound: true,
-      sound:
-          'islamic_tone.aiff', // iOS préfère .aiff ou .caf, mais .mp3 marche souvent
+      // sound:
+      //     'islamic_tone.aiff', // iOS préfère .aiff ou .caf, mais .mp3 marche souvent
     );
 
     const NotificationDetails platformDetails = NotificationDetails(
@@ -101,81 +124,91 @@ class NotificationService {
   }
 
   Future<void> _scheduleNotification({
-    required int id,
-    required String title,
-    required String body,
-    required DateTime scheduledTime,
-    String? sound,
-  }) async {
-    // On ne planifie pas si l'heure est déjà passée
-    if (scheduledTime.isBefore(DateTime.now())) return;
+  required int id,
+  required String title,
+  required String body,
+  required DateTime scheduledTime,
+  String? sound,
+}) async {
+  if (scheduledTime.isBefore(DateTime.now())) return;
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      id,
-      title,
-      body,
-      tz.TZDateTime.from(scheduledTime, tz.local),
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          sound == null ? 'default_channel' : 'islamic_channel',
-          'Ramadhan Reminders',
-          importance: Importance.max,
-          priority: Priority.high,
-          // sound: sound != null ? RawResourceAndroidNotificationSound(sound) : null,
-        ),
-        // iOS: DarwinNotificationDetails(
-        //   sound: sound != null ? '$sound.aiff' : null,
-        // ),
+  await flutterLocalNotificationsPlugin.zonedSchedule(
+    id,
+    title,
+    body,
+    tz.TZDateTime.from(scheduledTime, tz.local),
+    const NotificationDetails(
+      android: AndroidNotificationDetails(
+        'default_channel', // DOIT être identique à celui dans init()
+        'Rappels de Prière',
+        importance: Importance.max,
+        priority: Priority.high,
+        ticker: 'ticker',
+        // sound: sound != null ? RawResourceAndroidNotificationSound(sound) : null,
       ),
-      androidScheduleMode:
-          AndroidScheduleMode.exactAllowWhileIdle, // CRUCIAL pour app fermée
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents:
-          DateTimeComponents.time, // Pour répéter chaque jour si besoin
-    );
-  }
+      iOS: DarwinNotificationDetails(presentAlert: true, presentSound: true),
+    ),
+    androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+    uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+  );
+}
 
   Future<void> scheduleDailyPrayers(Map<String, String> prayerTimings) async {
-    // prayerTimings ressemble à : {"Fajr": "05:10", "Dhuhr": "12:30", ...}
+  final now = DateTime.now();
 
-    final now = DateTime.now();
+  for (final entry in prayerTimings.entries) {
+    final prayerName = entry.key;
+    final time = entry.value;
 
-    prayerTimings.forEach((prayerName, time) async {
-      final parts = time.split(':');
-      final hour = int.parse(parts[0]);
-      final minute = int.parse(parts[1]);
+    final parts = time.split(':');
+    final hour = int.parse(parts[0]);
+    final minute = int.parse(parts[1]);
 
-      final prayerTime = DateTime(now.year, now.month, now.day, hour, minute);
+    final prayerTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+    );
 
-      // 1. Notification pile à l'heure (ID unique basé sur le hash du nom)
+    // 🔥 Si l'heure est déjà passée → on programme pour demain
+    final scheduledTime = prayerTime.isBefore(now)
+        ? prayerTime.add(const Duration(days: 1))
+        : prayerTime;
+
+    final int baseId = prayerName.hashCode;
+
+    // ✅ Notification principale
+    await _scheduleNotification(
+      id: baseId,
+      title: "C'est l'heure du $prayerName 🕌",
+      body: "Qu'Allah accepte vos prières.",
+      scheduledTime: scheduledTime,
+    );
+
+    // ✅ Rappel 5 min avant
+    final reminderTime = scheduledTime.subtract(const Duration(minutes: 5));
+
+    if (reminderTime.isAfter(now)) {
       await _scheduleNotification(
-        id: prayerName.hashCode,
-        title: "C'est l'heure du $prayerName",
-        body: "Qu'Allah accepte vos prières.",
-        scheduledTime: prayerTime,
-        sound: 'islamic_tone',
-      );
-
-      // 2. Notification "Soft" 5 minutes avant
-      await _scheduleNotification(
-        id: prayerName.hashCode +
-            1, // ID différent pour ne pas écraser la première
+        id: baseId + 1,
         title: "$prayerName dans 5 minutes",
         body: "Préparez-vous pour la prière ✨",
-        scheduledTime: prayerTime.subtract(const Duration(minutes: 5)),
-        // On peut mettre un son plus discret ici ou le son par défaut
+        scheduledTime: reminderTime,
       );
-    });
+    }
   }
 
+  print("✅ Notifications journalières programmées !");
+}
 
   Future<void> scheduleRamadanSequence() async {
     // 1. Définition des horaires types
     final Map<String, String> prayerTimings = {
       "Imsak (Fin Sahoor)": "05:05:00",
       "Fajr": "05:15:00",
-      "Dhuhr": "12:55:00",
+      "Dhuhr": "14:37:00",
       "Asr": "15:20:00",
       "Maghrib (Iftar)": "18:50:00",
       "Isha": "20:10:00",

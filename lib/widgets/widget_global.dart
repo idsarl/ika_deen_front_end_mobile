@@ -139,8 +139,11 @@ Widget featureIcon(IconData icon, String label, Color color,
         const SizedBox(height: 8),
         Text(
           label,
+          maxLines: 1,
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(
-              fontSize: 12, color: Colors.black87, fontWeight: FontWeight.w500),
+              fontSize: 11, color: Colors.black87, fontWeight: FontWeight.w500),
         ),
       ],
     ),
