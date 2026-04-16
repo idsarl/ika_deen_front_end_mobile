@@ -230,7 +230,11 @@ class NotificationService {
     for (int i = 0; i < 7; i++) {
       final targetDate = DateTime.now().add(Duration(days: i));
 
-      prayerTimings.forEach((prayerName, time) async {
+      // prayerTimings.forEach((prayerName, time) async {
+
+     for (final entry in prayerTimings.entries) {
+  final prayerName = entry.key;
+  final time = entry.value;
         final parts = time.split(':');
         final hour = int.parse(parts[0]);
         final minute = int.parse(parts[1]);
@@ -258,7 +262,7 @@ class NotificationService {
             scheduledTime: reminderTime,
           );
         }
-      });
+      }
     }
 
     print("✅ Programmation de 7 jours terminée !");

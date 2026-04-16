@@ -116,6 +116,14 @@ void _handleInitialNavigation() async {
     _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
     _controller.forward();
 
+    Future.microtask(() async {
+    try {
+      await NotificationService().scheduleRamadanSequence();
+    } catch (e) {
+      print("❌ schedule error: $e");
+    }
+  });
+
     // Redirection automatique après 3 secondes
     // Timer(const Duration(seconds: 3), () {
     //   if (mounted) {

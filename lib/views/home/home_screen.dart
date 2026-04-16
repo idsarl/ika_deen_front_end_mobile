@@ -77,14 +77,12 @@ class _HomeScreenState extends State<HomeScreen> {
     _timer =
         Timer.periodic(const Duration(seconds: 1), (Timer t) => _updateTime());
     // Initialisation de la liste des pages
-    _pages = [
-      _buildHomeBody(), // Le contenu de l'accueil
-      QuoranScreen(
-        isback: false,
-      ), // Page Cours (ou Mosquées selon ton test)
-      const ListMosqueScreen(), // Page Objectifs
-      const ProfilScreen(), // Page Profil
-    ];
+   _pages = [
+    _buildHomeBody(),
+     QuoranScreen(isback: false),
+    const ListMosqueScreen(), // On l'affiche directement ici
+    const ProfilScreen(),
+  ];
   }
 
   @override
